@@ -1,0 +1,19 @@
+FROM docker pull node:lts-bookworm-slim AS builder
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN yarn run build:main
+
+FROM node:20.5.1-bookworm-slim AS production
+RUN addgroup app && adduser -S -G app app
+USER app
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+ENV PORT=3050
+WORKDIR /app
+COPY --from=builder /app/dist/apps/main-api/apps/main-api ./dist/main-api
+COPY --from=builder /app/dist/apps/main-api/libs/ ./libs
+COPY --from=builder /app/node_modules ./node_modules
+CMD ["node", "dist/main-api/src/main.js"]
+

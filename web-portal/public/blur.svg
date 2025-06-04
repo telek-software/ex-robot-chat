@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100">
+    <defs>
+        <filter id="f1" x="0" y="0">
+            <feGaussianBlur stdDeviation="30">
+                <animate attributeName="stdDeviation" dur="2s" repeatCount="indefinite" values="0;5;0"/>
+            </feGaussianBlur>
+        </filter>
+    </defs>
+    <rect width="200" height="200" fill="#000" stroke="darkgrey" stroke-width="3" filter="url(#f1)"/>
+</svg>

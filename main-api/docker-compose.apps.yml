@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  reader:
+    image: reader:latest
+    container_name: reader
+    build:
+      context: .
+      dockerfile: Dockerfile.reader
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: 'mongodb'
+      POSTGRES_HOST: 'postgres'
+      KAFKA_BROKERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+    networks:
+      - kafkanet
+
+  writter:
+    image: writter:latest
+    container_name: writter
+    build:
+      context: .
+      dockerfile: Dockerfile.writter
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: 'mongodb'
+      POSTGRES_HOST: 'postgres'
+      KAFKA_BROKERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+    networks:
+      - kafkanet
+
+  main-api:
+    image: main-api:latest
+    container_name: main-api
+    build:
+      context: .
+      dockerfile: Dockerfile.main-api
+    ports:
+      - '3050:3050'
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: 'mongodb'
+      POSTGRES_HOST: 'postgres'
+      KAFKA_BROKERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+    networks:
+      - kafkanet
+
+networks:
+  kafkanet:
+    external: true

@@ -1,0 +1,35 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Node Modules
+node_modules
+
+# Editor and OS cache files
+*.swp
+*.swo
+*.orig
+*~
+.DS_Store
+.idea/
+.vscode/
+npm-debug.log
+*.pid.lock
+*.md
+
+# Build directory
+build/
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+
+# Git
+.git
+.gitignore
+
+.gitlab/
+.husky/
+

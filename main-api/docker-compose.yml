@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    restart: on-failure:5
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    env_file:
+      - .env
+    volumes:
+      - ./scripts/postgres/${NODE_ENV}/startup:/docker-entrypoint-initdb.d
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - kafkanet
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: redis
+    image: 'redis:alpine'
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    networks:
+      - kafkanet
+    command: redis-server --save 20 1 --loglevel warning
+
+  mongodb:
+    container_name: mongodb
+    image: 'mongo:latest'
+    env_file:
+      - .env
+    restart: on-failure:5
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    volumes:
+      - mongodb:/data/db
+      - ./scripts/mongo/startup/init-db.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - kafkanet
+    healthcheck:
+      test: ['CMD', 'mongo', '--eval', 'db.adminCommand("ping")']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  kafkanet:
+    external: true
+
+volumes:
+  postgres:
+  mongodb:
+  redis:

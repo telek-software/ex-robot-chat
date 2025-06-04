@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": false,
+    "incremental": true,
+    "module": "commonjs",
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "removeComments": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictBindCallApply": false,
+    "strictNullChecks": false,
+    "target": "ES2021",
+    "paths": {
+      "~*": ["./apps/main-api/src/*"],
+      "~[writter]*": ["./apps/writter/src/*"],
+      "~[reader]*": ["./apps/reader/src/*"],
+      "~[shared]": ["./libs/shared/src"],
+      "~[shared]/*": ["./libs/shared/src/*"],
+      "~[aws]": ["./libs/aws/src"],
+      "~[aws]/*": ["./libs/aws/src/*"],
+      "~[mongoose]": ["./libs/mongoose/src"],
+      "~[mongoose]/*": ["./libs/mongoose/src/*"],
+      "~[typeorm]": ["./libs/typeorm/src"],
+      "~[typeorm]/*": ["./libs/typeorm/src/*"],
+      "~[kafka]": ["./libs/kafka/src"],
+      "~[kafka]/*": ["./libs/kafka/src/*"]
+    }
+  }
+}

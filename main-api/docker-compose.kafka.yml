@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  zookeeper1:
+    image: confluentinc/cp-zookeeper:7.4.1
+    restart: on-failure:5
+    container_name: zookeeper1
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: 'zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888'
+    volumes:
+      - zookeeper1_data:/var/lib/zookeeper
+    networks:
+      - kafkanet
+
+  zookeeper2:
+    image: confluentinc/cp-zookeeper:7.4.1
+    container_name: zookeeper2
+    restart: on-failure:5
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: 'zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888'
+    volumes:
+      - zookeeper2_data:/var/lib/zookeeper
+    networks:
+      - kafkanet
+
+  zookeeper3:
+    container_name: zookeeper3
+    image: confluentinc/cp-zookeeper:7.4.1
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: 'zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888'
+    volumes:
+      - zookeeper3_data:/var/lib/zookeeper
+    networks:
+      - kafkanet
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.4.1
+    container_name: kafka1
+    restart: on-failure:5
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - '9094:9094'
+    env_file:
+      - .env
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper1:2181,zookeeper2:2181,zookeeper3:2181'
+      KAFKA_ADVERTISED_LISTENERS: 'INSIDE://kafka1:9092,OUTSIDE://127.0.0.1:9094'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INSIDE'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./scripts/kafka:/scripts
+      - kafka1_data:/var/lib/kafka
+    networks:
+      - kafkanet
+    # command: [bash, -c, 'bash /scripts/seeds.sh']
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.4.1
+    container_name: kafka2
+    restart: on-failure:5
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - '9095:9095'
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper1:2181,zookeeper2:2181,zookeeper3:2181'
+      KAFKA_ADVERTISED_LISTENERS: 'INSIDE://kafka2:9092,OUTSIDE://127.0.0.1:9095'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INSIDE'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka2_data:/var/lib/kafka
+    networks:
+      - kafkanet
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.4.1
+    container_name: kafka3
+    restart: on-failure:5
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - '9096:9096'
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper1:2181,zookeeper2:2181,zookeeper3:2181'
+      KAFKA_ADVERTISED_LISTENERS: 'INSIDE://kafka3:9092,OUTSIDE://127.0.0.1:9096'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INSIDE'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka3_data:/var/lib/kafka
+    networks:
+      - kafkanet
+
+networks:
+  kafkanet:
+    external: true
+
+volumes:
+  zookeeper1_data:
+  zookeeper2_data:
+  zookeeper3_data:
+  kafka1_data:
+  kafka2_data:
+  kafka3_data:

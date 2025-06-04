@@ -1,13 +1,39 @@
-# React + TypeScript + Vite
+# Web-App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available :
+The Web-App is the main interface App for the clients. They can manage their chatbot with several configurations.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Development
 
-## Expanding the ESLint configuration
+```bash
+git clone git@gitlab.com:chappygo/web-app.git
+cd web-app
+yarn
+cp .env-example .env
+```
+
+### Start the App
+
+```
+yarn dev
+```
+
+### Build the App
+
+```
+yarn build
+```
+
+### Test the App
+
+```
+yarn test
+```
+
+---
+
+### Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
